@@ -109,8 +109,8 @@ def simpGame2(game):
 def simp3(game):
     if(isinstance(game,ga)):
         return game
-    #if(eq(ceil(game),game)):
-    #    game=ceil(game)
+    if(eq(ceil(game),game)):
+        return ga(n=ceil2(game),gtype='int')
     left,right=game
     newLeft,newRight=game
     for leftOption in left:
