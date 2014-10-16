@@ -212,6 +212,17 @@ def intToNimber(n):
     return (nimberHalf,nimberHalf)
 nim=intToNimber
 
+def binFrac(power,numerator=1):
+    if(numerator==0):
+        return g0
+    if(power==0):
+        return intToGame(numerator)
+    assert(power>=0)
+    if(numerator%2==0):
+        return binFrac(power-1,numerator/2)
+    return ([binFrac(power-1,(numerator-1)/2)],[binFrac(power-1,(numerator+1)/2)])
+
+
 #------------------------------------
 g0=([],[])
 g1=([g0],[])
