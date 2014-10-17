@@ -23,27 +23,32 @@ class ga():
     """
     This is a first attempt at making a class for games to make certain operations faster
     """
-    def __init__(self,n=0,gtype='int',left=None,right=None):
+    def __init__(self,n=0,gtype='int',left=None,right=None,denompower=1):
         self.n=n
         self.left=left
         self.right=right
         self.gtype=gtype
+        self.denomPower=denompower
     def __getitem__(self,index):
-        if(index==0):
-            if(self.left is None):
-                if(self.n>0):
-                    self.left=[ga(self.n -1)]
-                else:
-                    self.left=[]
-            return self.left
-        elif(index==1):
-            if(self.right is None):
-                if(self.n<0):
-                    self.right=ga(self.n + 1)
-                else:
-                    self.right=[]
-            return self.right
-        return "err"
+        if(self.gtype=='int'):
+            if(index==0):
+                if(self.left is None):
+                    if(self.n>0):
+                        self.left=[ga(self.n -1)]
+                    else:
+                        self.left=[]
+                return self.left
+            elif(index==1):
+                if(self.right is None):
+                    if(self.n<0):
+                        self.right=[ga(self.n + 1)]
+                    else:
+                        self.right=[]
+                return self.right
+            return "err"
+        elif(self.gtype=='binfrac'):
+            if(index==0):
+                pass
     def __str__(self):
         return str(self.n)
     def __int__(self):
@@ -242,6 +247,7 @@ def leftFirstWin(game):
 rightFirstWin=lambda game:leftFirstWin(gameNeg(game))
 lfs=leftFirstWin
 rfs=rightFirstWin
+
 
 def lessOrEqual(gameX,gameY):
     for xL in gameX[0]:
