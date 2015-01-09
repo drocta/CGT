@@ -29,6 +29,14 @@ class ga():
         self.right=right
         self.gtype=gtype
         self.denomPower=denompower
+        if(self.gtype=='binfrac'):
+            if(self.denomPower==0 or self.n==0):
+                self.gtype='int'
+            elif(self.n%2==0):
+                while(self.n%2==0 and self.denomPower>0):
+                    self.denomPower-=1
+                    self.n=self.n/2
+                    
     def __getitem__(self,index):
         if(self.gtype=='int'):
             if(index==0):
@@ -48,7 +56,9 @@ class ga():
             return "err"
         elif(self.gtype=='binfrac'):
             if(index==0):
-                pass
+                return [ga(n=(self.n-1)/2,gtype='binfrac',denompower=self.denomPower-1)]
+            if(index==1):
+                return [ga(n=(self.n+1)/2,gtype='binfrac',denompower=self.denomPower-1)]
     def __str__(self):
         return str(self.n)
     def __int__(self):
@@ -135,7 +145,10 @@ def gameSum(gameA,gameB):
     if(eq(gameB,g0)):
         return gameA
     if(isinstance(gameA,ga) and isinstance(gameB,ga)):
-        return ga(gameA.n+gameB.n)#improve this.
+        if(gameA.gtype=='int' and gameB.gtype=='int'):
+            return ga(gameA.n+gameB.n)#improve this.
+        if(gameA.gtype=='binfrac' and gameB.gtype=='binfrac'):
+            pass#this should probably be done with methods instead?
     left=[gameSum(L_A,gameB) for L_A in gameA[0]]+\
           [gameSum(L_B,gameA) for L_B in gameB[0]]
     left=dedup(left)
@@ -382,6 +395,7 @@ def parseExp(expr):
         print "not yet implemented"
         return None
 
+svars={'a':g0,'b':g1,'c':ig(5)}
 functionLookup={'ceil':lambda game:ig(ceil2(game)),'f':f,'sign':lambda game:parseExp(sign(game))}
 def parseInp(inp):
     tokens=tokenizing.tokenizeMultiToken([inp],['{',',','|','}','+','-',' ','X','eq']+\
@@ -431,6 +445,15 @@ def read_from_tokens(tokens,prev=None):
             return prev
         else:
             return g0
+    elif(tokens[0] =="set"):
+        tokens.pop(0)
+        varToUse=tokens.pop(0)
+        valueToUse=read_from_tokens(tokens,prev)
+        svars[varToUse]=valueToUse
+        return valueToUse
+    elif(tokens[0] in svars):
+        varToUse=tokens.pop(0)
+        return svars[varToUse]
     else:
         out=parseExp(tokens[0])
         tokens.pop(0)
