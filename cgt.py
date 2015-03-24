@@ -19,6 +19,51 @@ maybe handle future TODOs with github issue tracker?
 
 import tokenizing
 
+class omegaList():
+    """
+    An object of this class acts like an omega-tuple, with a function over the integers defining the value.
+    """
+    def __init__(self,func=lambda x:x):
+        self.func=func
+    def __getitem__(self,index):
+        return self.func(index)
+    def __add__(self,n):
+        return omap(lambda m:m+n,self)
+
+oList=omegaList()
+
+def omap(func,olist):
+    """Takes a function func and an omegaList olist,
+    Maps the function over the omega-tuple, and returns the resulting omega-tuple
+    (an omegaList)
+    Essentially function composition."""
+    return omegaList(lambda n:func(olist[n]))
+
+infAppr=20#how many terms to look
+
+class oga():
+    """This class might be combined with ga in the future.
+    It is for considering surreal numbers with infinite birthdays."""
+    def __init__(self,left=[],right=[],n=None):
+        """left and right are of the type omegaList (omega tuples)"""
+        self.left=left#must be increasing
+        self.right=right#must be decreasing
+        self.n=n
+        if(n!=-1):
+            self.left=omegaList(lambda x:n-1)
+    def __le__(self,other):
+        if(self.n!=None):
+            if(other.n!=None):
+                return self.n<=other.n
+            return True #only handling positive numbers for now.
+        if(other<=self.left[infAppr]):
+            return False
+        #ignoring right side for now
+        if(other.i==None):
+            if(other.right[infAppr]<=self):
+                return False
+        return True
+
 class ga():
     """
     This is a first attempt at making a class for games to make certain operations faster
@@ -405,7 +450,7 @@ def parseInp(inp):
 
 def read_from_tokens(tokens,prev=None):
     if(len(tokens)==0):
-        return None
+        return prev or g0
     if(tokens[0]=='{'):
         left,right=([],[])
         tokens.pop(0)
